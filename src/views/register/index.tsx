@@ -94,7 +94,7 @@ const Register: FC<RegisterProps> = ({ app, auth }): ReactElement => {
   const register = async (values: any) => {
     if (values.email && values.password) {
       try {
-        const res = await createUserWithEmailAndPassword(
+        await createUserWithEmailAndPassword(
           auth,
           values.email,
           values.password
