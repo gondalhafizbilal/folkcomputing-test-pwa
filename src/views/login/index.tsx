@@ -19,11 +19,10 @@ type RegisterErrorWithTerms = {
   password: string;
 };
 type LoginProps = {
-  app: any;
   auth: any;
 };
 
-const Login: FC<LoginProps> = ({ app, auth }): ReactElement => {
+const Login: FC<LoginProps> = ({ auth }): ReactElement => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState<LoginDt>(AUTH_INITIAL_STATE);

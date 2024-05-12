@@ -21,11 +21,10 @@ type RegisterErrorWithTerms = {
   confirmPassword: string;
 };
 type RegisterProps = {
-  app: any;
   auth: any;
 };
 
-const Register: FC<RegisterProps> = ({ app, auth }): ReactElement => {
+const Register: FC<RegisterProps> = ({ auth }): ReactElement => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState<RegisterDt>({
@@ -52,6 +51,8 @@ const Register: FC<RegisterProps> = ({ app, auth }): ReactElement => {
         ...prevData,
         [id]: value,
       }));
+      if (type) {
+      }
 
       setErrors({ ...errors, ...AUTH_INITIAL_STATE, confirmPassword: "" });
     };

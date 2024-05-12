@@ -38,11 +38,11 @@ const router: Router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login app={app} auth={auth} />,
+        element: <Login auth={auth} />,
       },
       {
         path: "register",
-        element: <Register app={app} auth={auth} />,
+        element: <Register auth={auth} />,
       },
       {
         path: "chat",
