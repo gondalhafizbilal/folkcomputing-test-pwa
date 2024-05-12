@@ -1,0 +1,11 @@
+input[type="checkbox"] {
+  @apply h-8 w-8  bg-gray-300  !ring-0 !outline-none;
+
+  &:checked {
+    @apply border-none;
+  }
+
+  &.error {
+    @apply border-red-700;
+  }
+}

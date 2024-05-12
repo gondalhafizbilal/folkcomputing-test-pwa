@@ -1,0 +1,23 @@
+.dropdownfield {
+  @apply border-2 p-2 rounded cursor-pointer h-fit text-sm font-semibold w-full block transition-all mt-4 sm:mt-0;
+  @apply bg-transparent;
+  @apply border;
+  @apply text-[#747272] dark:text-[#747272];
+
+  .dropdown-toggle {
+    @apply flex justify-between items-center;
+  }
+}
+
+.dropdown-menu {
+  @apply absolute top-full p-2 w-full rounded-lg shadow-2xl max-h-[300px] overflow-scroll z-40 bg-white;
+
+  &.hide {
+    @apply opacity-0 -z-10 transition-all;
+  }
+}
+
+.dropdown-option {
+  @apply border-b p-2 cursor-pointer last-of-type:border-0 hover:bg-gray-300;
+  @apply text-[#747272] dark:text-[#747272];
+}

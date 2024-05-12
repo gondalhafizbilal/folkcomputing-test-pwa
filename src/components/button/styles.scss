@@ -1,0 +1,28 @@
+.button {
+  @apply relative flex align-middle items-center justify-center gap-2 cursor-pointer rounded-3xl bg-[#E11934] hover:bg-[#a5465c] disabled:cursor-not-allowed font-semibold whitespace-nowrap active:opacity-50 transition-all duration-700 overflow-hidden;
+
+  &.contained {
+    @apply text-white text-sm max-md:px-3 max-md:py-1.5 max-2xl:px-4 max-2xl:py-2.5 px-5 py-3 bg-gradient-to-r via-50%;
+  }
+
+  &.text {
+    @apply text-black dark:text-black px-4 py-2;
+
+    &.active {
+      @apply bg-clip-text text-transparent bg-gradient-to-r via-50%;
+    }
+  }
+
+  &.link {
+    @apply text-black dark:text-black;
+
+    &.active,
+    &:hover {
+      @apply bg-clip-text text-transparent bg-gradient-to-r via-50%;
+    }
+  }
+
+  &.outlined {
+    @apply text-white px-4 py-2 border-2;
+  }
+}

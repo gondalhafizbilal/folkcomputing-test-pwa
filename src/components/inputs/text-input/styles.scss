@@ -1,0 +1,32 @@
+.unique-text-input {
+  @apply relative;
+
+  .label {
+    @apply block mb-1;
+  }
+
+  .input {
+    @apply border px-6 py-3 font-semibold w-full transition-all;
+    @apply bg-gray-100;
+    @apply border  border-gray-200;
+
+    &.styled:focus,
+    &.styled:focus-within {
+      @apply border-gray-200;
+    }
+
+    &:disabled {
+      // @apply bg-secondary dark:bg-secondary;
+      @apply border-gray-400 dark:border-gray-400;
+      @apply text-gray-400 dark:text-gray-400;
+    }
+  }
+
+  & .error-section {
+    @apply text-left top-full left-0;
+
+    & .error-message {
+      @apply text-red-600 text-sm;
+    }
+  }
+}
