@@ -1,0 +1,3 @@
+.register-page {
+  @apply w-full flex-1 flex justify-center items-center;
+}

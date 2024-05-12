@@ -1,0 +1,7 @@
+.page {
+  @apply h-screen flex flex-col;
+
+  /* .content {
+    @apply flex-1 flex flex-col overflow-y-scroll;
+  } */
+}
