@@ -62,11 +62,11 @@ export const generateGPTResponse = async (lang: string, prompt: any) => {
 const getServiceAccountJWTToken = async () => {
   try {
     if (Date.now() < expiryTime) {
-      console.log("Cached Access Token is used");
+      // console.log("Cached Access Token is used");
       return accessToken;
     }
 
-    console.log("New Access Token is generated");
+    // console.log("New Access Token is generated");
 
     const response = await axios.get(
       `${process.env.REACT_APP_RELAY_SERVER_URL}/api/token?url=${jwtCloudFunctionURL}`

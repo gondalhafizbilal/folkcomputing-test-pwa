@@ -175,7 +175,6 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
 
         try {
           let res = await generateTextFromSpeech(uri, "bn-BD");
-          console.log("transalted text: ", res?.msg);
           if (res?.msg) {
             setValue(res?.msg);
           }
