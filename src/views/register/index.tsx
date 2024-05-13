@@ -95,6 +95,7 @@ const Register: FC<RegisterProps> = ({ auth }): ReactElement => {
   };
 
   const register = async (values: any) => {
+    const errorObj = {} as RegisterErrorWithTerms;
     if (values.email && values.password) {
       try {
         await createUserWithEmailAndPassword(
@@ -109,15 +110,17 @@ const Register: FC<RegisterProps> = ({ auth }): ReactElement => {
         setLoading(false);
         if (error.code === "auth/email-already-in-use") {
           console.log("🚀 ~ Error: That email address is already in use!");
-          alert("email address is already in use!");
+          errorObj.email = "Email address is already in use!";
         }
 
         if (error.code === "auth/invalid-email") {
           console.log("🚀 ~ Error: That email address is invalid!");
-          alert("email address is invalid!");
+          errorObj.email = "Email address is invalid!";
         }
-
-        console.error(error);
+        if (Object.keys(errorObj).length > 0) {
+          setErrors({ ...errors, ...errorObj });
+          return;
+        }
       }
     }
   };

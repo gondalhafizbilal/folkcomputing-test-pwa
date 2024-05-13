@@ -14,7 +14,7 @@ type LoginDt = {
 };
 
 type RegisterErrorWithTerms = {
-  agreedToTerms: boolean;
+  agreedToTerms: string;
   email: string;
   password: string;
 };
@@ -28,7 +28,7 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
   const [data, setData] = useState<LoginDt>(AUTH_INITIAL_STATE);
   const [errors, setErrors] = useState<RegisterErrorWithTerms>({
     ...AUTH_INITIAL_STATE,
-    agreedToTerms: false,
+    agreedToTerms: "",
   });
   const [doesAgreedToTerms, setDoesAgreedToTerms] = useState<boolean>(false);
 
@@ -54,7 +54,8 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
     const errorObj = {} as RegisterErrorWithTerms;
 
     if (!doesAgreedToTerms) {
-      errorObj.agreedToTerms = true;
+      errorObj.agreedToTerms =
+        "Please accept the Terms and Conditions to continue";
     }
     if (!data.email.trim()) {
       errorObj.email = "Email is required";
@@ -76,6 +77,7 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
   };
 
   const login = async (values: any) => {
+    const errorObj = {} as RegisterErrorWithTerms;
     if (values.email && values.password) {
       try {
         const res = await signInWithEmailAndPassword(
@@ -90,7 +92,11 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
         setLoading(false);
         if (error.code === "auth/invalid-credential") {
           console.log("🚀 ~ Error: Incorrect Email/Password");
-          alert("Incorrect Email/Password");
+          errorObj.agreedToTerms = "Incorrect Email/Password";
+          if (Object.keys(errorObj).length > 0) {
+            setErrors({ ...errors, ...errorObj });
+            return;
+          }
         }
       }
     }
@@ -142,10 +148,10 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
             <CheckBox
               id="conditions"
               selected={doesAgreedToTerms}
-              error={errors.agreedToTerms}
+              error={Boolean(errors.agreedToTerms)}
               onSelection={(status) => {
                 if (status) {
-                  setErrors({ ...errors, agreedToTerms: false });
+                  setErrors({ ...errors, agreedToTerms: "" });
                 }
                 setDoesAgreedToTerms(status);
               }}
@@ -162,7 +168,7 @@ const Login: FC<LoginProps> = ({ auth }): ReactElement => {
               invisible: !errors.agreedToTerms,
             })}
           >
-            Please accept the Terms and Conditions to continue
+            {errors.agreedToTerms}
           </span>
           <Button type="button" className="w-full mt-10" onClick={signIn}>
             Login
