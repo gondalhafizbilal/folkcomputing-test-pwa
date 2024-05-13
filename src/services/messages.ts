@@ -13,6 +13,15 @@ import { getUserData } from "../utils";
 
 import axios, { AxiosHeaders } from "axios";
 
+interface Message {
+  _id: string;
+  text: string;
+  createdAt: Date;
+  user: {
+    _id: string;
+  };
+}
+
 const anthropicAPIKey = process.env.REACT_APP_ANTHROPIC_API_KEY;
 const jwtCloudFunctionURL = "https://getjwttoken-fkt6vl2lgq-uc.a.run.app";
 const googlecloudAccessTokenURL = "https://oauth2.googleapis.com/token";
@@ -103,13 +112,13 @@ export const generateTextFromSpeech = async (
     serviceUnavailableError();
     return;
   }
-  console.log("jwtToken", jwtToken);
+
   const gcpAccessToken = await getGCPAccessToken(jwtToken);
   if (!gcpAccessToken) {
     serviceUnavailableError();
     return;
   }
-  console.log("gcpaccesstoken", gcpAccessToken);
+
   const params = {
     config: {
       encoding: "mp3",
@@ -131,8 +140,8 @@ export const generateTextFromSpeech = async (
       msg: res?.data?.results[0]?.alternatives[0]?.transcript,
     };
   } catch (err: any) {
-    serviceUnavailableError();
-    return { success: false, msg: err };
+    // serviceUnavailableError();
+    return { success: false, msg: undefined };
   }
 };
 
@@ -178,21 +187,14 @@ export const getVoiceFileFromText = async (
     }
     const binaryData = atob(audioContent);
 
-    // Convert the binary data to an array buffer
     const arrayBuffer = new ArrayBuffer(binaryData.length);
     const uint8Array = new Uint8Array(arrayBuffer);
     for (let i = 0; i < binaryData.length; i++) {
       uint8Array[i] = binaryData.charCodeAt(i);
     }
 
-    // Create a Blob from the array buffer
-    const blob = new Blob([uint8Array], { type: "audio/webm" }); // Assuming it's a webm audio
-
-    // Create an object URL for the Blob
+    const blob = new Blob([uint8Array], { type: "audio/webm" });
     const url: string = URL.createObjectURL(blob);
-
-    // const localSaveFileURL = `${RNFS.CachesDirectoryPath}/${v4()}.mp3`;
-    // await RNFS.writeFile(localSaveFileURL, audioContent, 'base64');
 
     return url;
   } catch (error) {
@@ -261,14 +263,7 @@ export const translateMessages = async (
     return value;
   }
 };
-interface Message {
-  _id: string;
-  text: string;
-  createdAt: Date;
-  user: {
-    _id: string;
-  };
-}
+
 export const updateMessages = async (
   messages: Message[],
   message: Message[],
@@ -289,5 +284,16 @@ export const updateMessages = async (
   } catch (error) {
     console.log("🚀 ~ error:", error);
     return messages;
+  }
+};
+
+export const trainModel = async () => {
+  const trainMsg =
+    "You are a digital health assistant. Your role is to act like a health consultant, taking user input and providing medical advice. Begin by greeting the patient, then check if the input pertains to health-related symptoms or discomfort. Prompt the user if necessary, asking health-related questions. Focus on relevant portions when receiving prompts. If a user mentions a symptom, inquire about its severity. Ensure at least three questions before suggesting a diagnosis. Maintain a suggestive approach, never implying that you are a doctor. Provide a suggestive diagnosis based on the user-provided symptoms.";
+
+  try {
+    await generateGPTResponse("en", trainMsg);
+  } catch (error) {
+    console.log("🚀 ~ error:", error);
   }
 };

@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   generateGPTResponse,
   getUserMessages,
+  trainModel,
   translateMessages,
   updateMessages,
 } from "../../services/messages";
@@ -31,6 +32,7 @@ type ChatProps = {
 const Chat: FC<ChatProps> = ({ store }): ReactElement => {
   const [audioSrc, setAudioSrc] = useState<string>("");
   const [messages, setMessages] = useState<any>([]);
+  const [disabled, setDisabled] = useState<boolean | undefined>(false);
   const [recordingStatus, setRecordingStatus] = useState<boolean>(false);
   const [value, setValue] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,13 +47,16 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
       navigate("/login");
     }
     setLoading(true);
+
     initializeUserDoc();
   }, []);
 
   const initializeUserDoc = async () => {
     const defaultMsg =
       "Hi! I'm an AI assistant Aarya! \n How can I help you today?";
+
     try {
+      await trainModel();
       const data = await getUserMessages(store);
       if (data.length === 1 && data[0].text === defaultMsg) {
         const dt = await getVoiceFileFromText(
@@ -150,8 +155,8 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
   };
 
   const startRecording = async (activeStream: MediaStream) => {
-    setRecordingStatus(true);
     if (activeStream) {
+      setRecordingStatus(true);
       const media = new MediaRecorder(activeStream, { mimeType: "audio/webm" });
       let localAudioChunks: Blob[] = [];
 
@@ -171,11 +176,13 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
         try {
           let res = await generateTextFromSpeech(uri, "bn-BD");
           console.log("transalted text: ", res?.msg);
-          setValue(res?.msg);
+          if (res?.msg) {
+            setValue(res?.msg);
+          }
         } catch (error) {
           console.log("🚀 ~Error: ", error);
         }
-        setLoading(false);
+        setDisabled(false);
       };
       mediaRecorder.current = media;
 
@@ -184,7 +191,7 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
   };
 
   const stopRecording = async () => {
-    setLoading(true);
+    setDisabled(true);
     setRecordingStatus(false);
     if (mediaRecorder !== undefined) {
       mediaRecorder.current?.stop();
@@ -252,38 +259,49 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
             onChange={(e) => setValue(e.target.value)}
             value={value}
             onKeyDown={handleKeyDown}
+            disabled={disabled}
           />
           <div className="flex">
             {language === "bn" && (
-              <button type="button">
+              <button type="button" disabled={disabled}>
                 {recordingStatus ? (
                   <StopCircleIcon
                     type="button"
-                    className="w-6 ml-2 text-[#E11934]"
+                    className={`w-6 ml-2 ${
+                      disabled ? "text-[#E55568]" : "text-[#E11934]"
+                    } `}
                     onClick={async () => {
-                      await stopRecording();
+                      if (!disabled) {
+                        await stopRecording();
+                      }
                     }}
                   />
                 ) : (
                   <MicrophoneIcon
                     type="button"
-                    className="w-6 ml-2 text-[#E11934]"
+                    className={`w-6 ml-2 ${
+                      disabled ? "text-[#E55568]" : "text-[#E11934]"
+                    } `}
                     onClick={async () => {
-                      try {
-                        const mediaStream = await getMicrophonePermission();
-                        if (mediaStream && mediaStream.active) {
-                          await startRecording(mediaStream);
-                        }
-                      } catch (error) {}
+                      if (!disabled) {
+                        try {
+                          const mediaStream = await getMicrophonePermission();
+                          if (mediaStream && mediaStream.active) {
+                            await startRecording(mediaStream);
+                          }
+                        } catch (error) {}
+                      }
                     }}
                   />
                 )}
               </button>
             )}
-            <button disabled={recordingStatus} onClick={sendMessage}>
+            <button disabled={!value} onClick={sendMessage}>
               <PaperAirplaneIcon
                 type="button"
-                className="w-6 ml-2 text-[#E11934]"
+                className={`w-6 ml-2 ${
+                  !value ? "text-[#E55568]" : "text-[#E11934]"
+                } `}
               />
             </button>
             <audio
