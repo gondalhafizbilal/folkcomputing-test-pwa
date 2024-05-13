@@ -73,6 +73,8 @@ const Register: FC<RegisterProps> = ({ auth }): ReactElement => {
 
     if (!data.password.trim()) {
       errorObj.password = "Password is required.";
+    } else if (data.password.length < 6) {
+      errorObj.password = "Password should be at least 6 characters.";
     }
 
     if (!data.confirmPassword.trim()) {

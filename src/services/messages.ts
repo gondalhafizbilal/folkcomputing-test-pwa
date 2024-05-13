@@ -218,7 +218,7 @@ export const getUserMessages = async (store: any) => {
       const messages = [
         {
           _id: v4(),
-          text: "Hi! I'm an AI assistant Aarya! \n How can I help you today?",
+          text: "Hi! I'm an AI assistant Claude! \n How can I help you today?",
           createdAt: new Date(),
           user: {
             _id: "ASSISTENT",

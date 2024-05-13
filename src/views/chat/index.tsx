@@ -53,7 +53,7 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
 
   const initializeUserDoc = async () => {
     const defaultMsg =
-      "Hi! I'm an AI assistant Aarya! \n How can I help you today?";
+      "Hi! I'm an AI assistant Claude! \n How can I help you today?";
 
     try {
       await trainModel();
