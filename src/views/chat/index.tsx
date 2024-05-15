@@ -174,7 +174,10 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
         const uri = `gs://${response.metadata.bucket}/${response.metadata.fullPath}`;
 
         try {
-          let res = await generateTextFromSpeech(uri, "bn-BD");
+          let res = await generateTextFromSpeech(
+            uri,
+            language === "en" ? "en-US" : "bn-BD"
+          );
           if (res?.msg) {
             setValue(res?.msg);
           }
@@ -261,40 +264,39 @@ const Chat: FC<ChatProps> = ({ store }): ReactElement => {
             disabled={disabled}
           />
           <div className="flex">
-            {language === "bn" && (
-              <button type="button" disabled={disabled}>
-                {recordingStatus ? (
-                  <StopCircleIcon
-                    type="button"
-                    className={`w-6 ml-2 ${
-                      disabled ? "text-[#E55568]" : "text-[#E11934]"
-                    } `}
-                    onClick={async () => {
-                      if (!disabled) {
-                        await stopRecording();
-                      }
-                    }}
-                  />
-                ) : (
-                  <MicrophoneIcon
-                    type="button"
-                    className={`w-6 ml-2 ${
-                      disabled ? "text-[#E55568]" : "text-[#E11934]"
-                    } `}
-                    onClick={async () => {
-                      if (!disabled) {
-                        try {
-                          const mediaStream = await getMicrophonePermission();
-                          if (mediaStream && mediaStream.active) {
-                            await startRecording(mediaStream);
-                          }
-                        } catch (error) {}
-                      }
-                    }}
-                  />
-                )}
-              </button>
-            )}
+            <button type="button" disabled={disabled}>
+              {recordingStatus ? (
+                <StopCircleIcon
+                  type="button"
+                  className={`w-6 ml-2 ${
+                    disabled ? "text-[#E55568]" : "text-[#E11934]"
+                  } `}
+                  onClick={async () => {
+                    if (!disabled) {
+                      await stopRecording();
+                    }
+                  }}
+                />
+              ) : (
+                <MicrophoneIcon
+                  type="button"
+                  className={`w-6 ml-2 ${
+                    disabled ? "text-[#E55568]" : "text-[#E11934]"
+                  } `}
+                  onClick={async () => {
+                    if (!disabled) {
+                      try {
+                        const mediaStream = await getMicrophonePermission();
+                        if (mediaStream && mediaStream.active) {
+                          await startRecording(mediaStream);
+                        }
+                      } catch (error) {}
+                    }
+                  }}
+                />
+              )}
+            </button>
+
             <button disabled={!value} onClick={sendMessage}>
               <PaperAirplaneIcon
                 type="button"
